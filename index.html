@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeShooter: A Multi-Shot Animation Dataset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="geometric-decoration"></div>
+        <div class="container">
+            <h1>AnimeShooter: A Multi-Shot Animation Dataset for Reference-Guided Video Generation</h1>
+            <div class="author-list-header">
+                <span>Lu Qiu<sup>1,2</sup>, </span>
+                <span>Yizhuo Li<sup>1,2</sup>, </span>
+                <span>Yuying Ge<sup>†,2</sup>, </span>
+                <span>Yixiao Ge<sup>2</sup>, </span>
+                <span>Ying Shan<sup>2</sup>, </span>
+                <span>Xihui Liu<sup>†,1</sup></span>
+            </div>
+            <div class="affiliations-header">
+                <span><sup>1</sup>The University of Hong Kong</span>
+                <span><sup>2</sup>ARC Lab, Tencent PCG</span>
+            </div>
+            <div class="external-links">
+                <a href="#" class="external-link" target="_blank">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1.99 6H7V7h10.01v2zm0 4H7v-2h10.01v2zm-3 4H7v-2h7.01v2z"/>
+                    </svg>
+                    <span>Paper</span>
+                </a>
+                <a href="#" class="external-link" target="_blank">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                    </svg>
+                    <span>Code</span>
+                </a>
+                <a href="https://huggingface.co/datasets/qiulu66/AnimeShooter" class="external-link" target="_blank">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"/>
+                    </svg>
+                    <span>Dataset</span>
+                </a>
+                <a href="https://huggingface.co/qiulu66/AnimeShooterGen" class="external-link" target="_blank">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9M12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15z"/>
+                    </svg>
+                    <span>Model</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-content-wrapper">
+        <!-- <nav id="table-of-contents">
+            <ul>
+                <li><a href="#abstract">Abstract</a></li>
+                <li><a href="#dataset-structure">Dataset Structure</a></li>
+                <li><a href="#dataset-viewer">Dataset Viewer</a></li>
+                <li><a href="#samples">Samples</a></li>
+            </ul>
+        </nav> -->
+
+        <main class="main-content-area">
+            <div class="container">
+                <section id="abstract" class="abstract section">
+                    <h2>Abstract</h2>
+                    <div class="teaser-image-container">
+                        <img src="assets/figures/teaser.png" alt="AnimeShooter Teaser" class="teaser-image" width="100%">
+                    </div>
+                    <p>Recent advances in AI-generated content (AIGC) have significantly accelerated animation production. To
+                        produce engaging animations, it is essential to generate coherent multi-shot video clips with narrative
+                        scripts and character references. However, existing public datasets primarily focus on real-world
+                        scenarios with global descriptions, and lack reference images for consistent character guidance. To
+                        bridge this gap, we present <b>AnimeShooter</b>, a reference-guided multi-shot animation dataset. AnimeShooter
+                        features comprehensive hierarchical annotations and strong visual consistency across shots through an
+                        automated pipeline. Story-level annotations provide an overview of the narrative, including the
+                        storyline, key scenes, and main character profiles with reference images, while shot-level annotations
+                        decompose the story into consecutive shots, each annotated with scene, characters, and both narrative
+                        and descriptive visual captions. Additionally, a dedicated subset, AnimeShooter-audio, offers
+                        synchronized audio tracks for each shot, along with audio descriptions and sound sources. To demonstrate
+                        the effectiveness of AnimeShooter and establish a baseline for the reference-guided multi-shot video
+                        generation task, we introduce AnimeShooterGen, which leverages Multimodal Large Language Models (MLLMs)
+                        and video diffusion models. The reference image and previously generated shots are first processed by
+                        MLLM to produce representations aware of both reference and context, which are then used as the
+                        condition for the diffusion model to decode the subsequent shot. Experimental results show that the
+                        model trained on AnimeShooter achieves superior cross-shot visual consistency and adherence to reference
+                        visual guidance, which highlight the value of our dataset for coherent animated video generation.</p>
+                </section>
+
+                <section id="dataset-structure" class="dataset-structure section">
+                    <h2>Dataset Structure</h2>
+                    <p>The dataset can be downloaded from: <a href="https://huggingface.co/datasets/qiulu66/AnimeShooter"
+                            target="_blank">Hugging Face</a>.</p>
+                    <p>We currently provide:</p>
+                    <ul>
+                        <li><code>video_ids.txt</code>: A list of video IDs for downloading source videos with yt-dlp.</li>
+                        <li><code>dataset_anime_shooter.zip</code>: The complete annotations in json format including reference
+                            image masks.</li>
+                        <li><code>dataset_anime_shooter_audio.zip</code>: The subset with audio annotations.</li>
+                    </ul>
+
+                    <h3>Dataset Fields</h3>
+                    <p>The dataset_anime_shooter.zip is structured as a collection of JSON files, where each file corresponds to a
+                        single video. Each JSON file contains the following fields (click <span style="color: #5e72e4;">&#x25B6;</span> to expand):</p>
+
+                    <div class="structure-block">
+                        <h4>Video Level</h4>
+                        <div class="field-group">
+                            <div class="field-entry">
+                                <span class="field-name">video ID:</span> <span class="field-type">string</span> - Unique
+                                YouTube identifier.
+                            </div>
+                            <div class="field-entry">
+                                <span class="field-name">url:</span> <span class="field-type">string</span> - Direct YouTube
+                                link.
+                            </div>
+                            <div class="field-entry">
+                                <span class="field-name">fps:</span> <span class="field-type">float</span> - Frame rate of the
+                                original video, used for temporal alignment.
+                            </div>
+                            <div class="field-entry expandable">
+                                <button class="expand-btn"></button> <span class="field-name">segments:</span> <span
+                                    class="field-type">list</span> - A list of segment objects. Each video is divided into these
+                                coherent story segments.
+                                <div class="nested-structure collapsible-content">
+                                    <h4>Segment Level</h4>
+                                    <p>Each object within the <code>segments</code> list represents a meaningful narrative unit
+                                        and contains:</p>
+                                    <div class="field-group">
+                                        <div class="field-entry">
+                                            <span class="field-name">start frame index:</span> <span
+                                                class="field-type">integer</span> - The starting frame index of the segment in
+                                            the original video.
+                                        </div>
+                                        <div class="field-entry">
+                                            <span class="field-name">end frame index:</span> <span
+                                                class="field-type">integer</span> - The ending frame index of the segment in the
+                                            original video.
+                                        </div>
+                                        <div class="field-entry expandable">
+                                            <button class="expand-btn"></button> <span class="field-name">story script:</span>
+                                            <span class="field-type">object</span> - Contains the annotations of the segment:
+                                            <div class="nested-structure collapsible-content">
+                                                <div class="field-entry">
+                                                    <span class="field-name">storyline:</span> <span
+                                                        class="field-type">string</span> - A high-level summary of the
+                                                    story told in this segment.
+                                                </div>
+                                                <div class="field-entry expandable">
+                                                    <button class="expand-btn"></button> <span class="field-name">main
+                                                        characters:</span> <span class="field-type">list of objects</span> -
+                                                    Primary characters appearing in this segment. Each character
+                                                    object has:
+                                                    <div class="nested-structure collapsible-content">
+                                                        <div class="field-entry">
+                                                            <span class="field-name">ID:</span> <span
+                                                                class="field-type">string</span> - A unique identifier for the
+                                                            character.
+                                                        </div>
+                                                        <div class="field-entry">
+                                                            <span class="field-name">appearance:</span> <span
+                                                                class="field-type">string</span> - A textual description of the
+                                                            character's visual appearance.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="field-entry expandable">
+                                                    <button class="expand-btn"></button> <span class="field-name">main
+                                                        scenes:</span> <span class="field-type">list of objects</span> -
+                                                    Key locations or environments featured in this segment. Each
+                                                    scene object has:
+                                                    <div class="nested-structure collapsible-content">
+                                                        <div class="field-entry">
+                                                            <span class="field-name">ID:</span> <span
+                                                                class="field-type">string</span> - A unique identifier for the
+                                                            scene.
+                                                        </div>
+                                                        <div class="field-entry">
+                                                            <span class="field-name">environment:</span> <span
+                                                                class="field-type">string</span> - A textual description of the
+                                                            scene.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="field-entry expandable">
+                                                    <button class="expand-btn"></button> <span class="field-name">shots:</span>
+                                                    <span class="field-type">list of objects</span> - A detailed breakdown of
+                                                    the segment into individual shots.
+                                                    <div class="nested-structure collapsible-content">
+                                                        <h4>Shot Level</h4>
+                                                        <p>Each segment's <code>story script</code> contains a
+                                                            <code>shots</code> list, where each object represents an individual
+                                                            shot with the following fields:</p>
+                                                        <div class="field-group">
+                                                            <div class="field-entry">
+                                                                <span class="field-name">start time:</span> <span
+                                                                    class="field-type">string</span> - The start time of the
+                                                                shot (e.g., "00:00", "00:12") in the segment.
+                                                            </div>
+                                                            <div class="field-entry">
+                                                                <span class="field-name">end time:</span> <span
+                                                                    class="field-type">string</span> - The end time of the shot
+                                                                (e.g., "00:00", "00:12") in the segment.
+                                                            </div>
+                                                            <div class="field-entry">
+                                                                <span class="field-name">is_prologue_or_epilogue:</span> <span
+                                                                    class="field-type">boolean</span> - Flag if the shot is part
+                                                                of a prologue or epilogue.
+                                                            </div>
+                                                            <div class="field-entry">
+                                                                <span class="field-name">main characters:</span> <span
+                                                                    class="field-type">list of strings</span> - Character
+                                                                <code>ID</code>s active in this shot.
+                                                            </div>
+                                                            <div class="field-entry">
+                                                                <span class="field-name">scene:</span> <span
+                                                                    class="field-type">string</span> - The <code>ID</code> of
+                                                                the scene for this shot.
+                                                            </div>
+                                                            <div class="field-entry expandable">
+                                                                <button class="expand-btn"></button> <span
+                                                                    class="field-name">visual annotation:</span> <span
+                                                                    class="field-type">object</span> - Textual descriptions of
+                                                                the shot's visual content:
+                                                                <div class="nested-structure collapsible-content">
+                                                                    <div class="field-entry">
+                                                                        <span class="field-name">narrative caption:</span> <span
+                                                                            class="field-type">string</span> - Plot-driven
+                                                                        description.
+                                                                    </div>
+                                                                    <div class="field-entry">
+                                                                        <span class="field-name">descriptive caption:</span>
+                                                                        <span class="field-type">string</span> - Detailed visual
+                                                                        inventory.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="field-entry">
+                                                                <span class="field-name">audio annotation:</span> <span
+                                                                    class="field-type">object</span> - Only in
+                                                                AnimeShooter-audio.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field-entry expandable">
+                                            <button class="expand-btn"></button> <span class="field-name">reference
+                                                images:</span> <span class="field-type">list of objects</span> -
+                                            Character-specific reference images and masks.
+                                            <div class="nested-structure collapsible-content">
+                                                <div class="field-entry">
+                                                    <span class="field-name">ID:</span> <span class="field-type">string</span> -
+                                                    The identifier of the character.
+                                                </div>
+                                                <div class="field-entry expandable">
+                                                    <button class="expand-btn"></button> <span class="field-name">masks:</span>
+                                                    <span class="field-type">list of objects</span> - Mask data for the
+                                                    character.
+                                                    <div class="nested-structure collapsible-content">
+                                                        <div class="field-entry">
+                                                            <span class="field-name">frame index:</span> <span
+                                                                class="field-type">integer</span> - Frame index for this mask in the original video.
+                                                        </div>
+                                                        <div class="field-entry">
+                                                            <span class="field-name">rle mask:</span> <span
+                                                                class="field-type">object</span> - Run-Length Encoding for the
+                                                            mask.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section id="dataset-samples" class="dataset-samples section">
+                    <h2>Dataset Sample</h2>
+                    <p>We show an example of AnimeShooter telling the story of <b>Luna and her father</b>. The annotation script contains the story-level annotation for the story overview and detailed shot-level annotations for each shot.</p>
+
+                    <div class="multi-shot-player">
+                        <div class="video-container">
+                            <video id="mainVideo" controls autoplay muted loop class="main-video">
+                                <source src="assets/dataset_sample.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        
+                        <div class="shot-controls">
+                            <div class="shot-buttons" id="shotButtons">
+                                <button class="shot-btn active" data-clip="clip_1" data-start="00:00" data-end="00:07.5">
+                                    Shot 1
+                                </button>
+                                <button class="shot-btn" data-clip="clip_2" data-start="00:07.5" data-end="00:11">
+                                    Shot 2
+                                </button>
+                                <button class="shot-btn" data-clip="clip_3" data-start="00:11" data-end="00:18.5">
+                                    Shot 3
+                                </button>
+                                <button class="shot-btn" data-clip="clip_4" data-start="00:18.5" data-end="00:21.4">
+                                    Shot 4
+                                </button>
+                                <button class="shot-btn" data-clip="clip_5" data-start="00:21.4" data-end="00:23.2">
+                                    Shot 5
+                                </button>
+                                <button class="shot-btn" data-clip="clip_6" data-start="00:23.2" data-end="00:25.4">
+                                    Shot 6
+                                </button>
+                                <button class="shot-btn" data-clip="clip_7" data-start="00:25.4" data-end="00:31.8">
+                                    Shot 7
+                                </button>
+                                <button class="shot-btn" data-clip="clip_8" data-start="00:31.8" data-end="00:35.2">
+                                    Shot 8
+                                </button>
+                                <button class="shot-btn" data-clip="clip_9" data-start="00:35.2" data-end="00:37.8">
+                                    Shot 9
+                                </button>
+                                <button class="shot-btn" data-clip="clip_10" data-start="00:37.8" data-end="00:40">
+                                    Shot 10
+                                </button>
+                                <button class="shot-btn" data-clip="clip_11" data-start="00:40" data-end="00:42">
+                                    Shot 11
+                                </button>
+                                <button class="shot-btn" data-clip="clip_12" data-start="00:42" data-end="00:46.2">
+                                    Shot 12
+                                </button>
+                                <button class="shot-btn" data-clip="clip_13" data-start="00:46.2" data-end="00:49">
+                                    Shot 13
+                                </button>
+                            </div>
+
+                            <div class="story-level-annotation">
+                                <div class="story-info">
+                                    <h3>Story-level Annotation</h3>
+                                    <div class="story-details">
+                                        <div class="story-storyline">
+                                            <p><b>Storyline: </b><span id="storyStoryline">A young girl named Luna dreams of becoming an astronaut. She has a birthday celebration with her father, who is a shoemaker, who makes her rocket boots.</span></p>
+                                        </div>
+                                        <div class="story-characters">
+                                            <div class="story-characters-text">
+                                                <p><b>Main Characters:</b></p>
+                                                <div id="storyCharactersList" class="story-list"></div>
+                                            </div>
+                                            <div class="story-characters-images">
+                                                <img src="assets/figures/luna.jpg" alt="Luna" class="character-image">
+                                                <img src="assets/figures/father.jpg" alt="Father" class="character-image">
+                                            </div>
+                                        </div>
+                                        <div class="story-scenes">
+                                            <p><b>Main Scenes:</b></p>
+                                            <div id="storyScenesList" class="story-list"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="current-shot">
+                                <div class="shot-info">
+                                    <h3 id="currentShotTitle">Shot-level Annotation for Shot 1</h3>
+                                    <div class="shot-details">
+                                        <div class="shot-scene">
+                                            <p><b>Scene:</b></p>
+                                            <div class="story-list-item">
+                                                <span id="currentShotScene" class="item-description">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <div class="shot-characters">
+                                            <p><b>Main Characters:</b></p>
+                                            <div class="story-list-item">
+                                                <span id="currentShotCharacters" class="item-description">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <div class="shot-narrative">
+                                            <p><b>Narrative Caption:</b></p>
+                                            <div class="story-list-item">
+                                                <span id="currentShotNarrative" class="item-description">Loading...</span>
+                                            </div>
+                                        </div>
+                                        <div class="shot-descriptive">
+                                            <p><b>Descriptive Caption:</b></p>
+                                            <div class="story-list-item">
+                                                <span id="currentShotDescription" class="item-description">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </section>
+
+                <section id="architecture-of-animeshootergen" class="architecture-of-animeshootergen section">
+                    <h2>Architecture of AnimeShooterGen</h2>
+                    <div class="architecture-video-container">
+                        <video controls autoplay muted loop class="architecture-video">
+                            <source src="assets/architecture.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p>Overview of the model architecture of <b>AnimeShooterGen</b>. The two core components include the autoregressive backbone stemming from pretrained MLLM, and a video generator initialized from a pretrained DiT. To stitch these two components, we add a Q-Former as the adapter. This framework can generate multi-shot video in autoregressive manner.</p>
+                    </div>
+                </section>
+
+                <section id="animeshootergen-experiments" class="animeshootergen-experiments section">
+                    <h2>Investigating the Impact of Reference Images</h2>
+                    <p>Visualization of using different references in MLLM <b>(before LoRA Enhancement)</b>. In the first row, we use an empty image as reference, representing the case without reference control. Shared captions: 
+                        <ul>
+                            <li>Shot-1: The man walks down a cobblestone street lined with blooming cherry trees, holding a vintage leather journal under his arm.</li>
+                            <li>Shot-2: He pauses at a flower shop, steps inside, and begins carefully selecting flowers.</li>
+                            <li>Shot-3: At the counter, he wraps the bouquet in paper.</li>
+                            <li>Shot-4: He tucks the flowers into his bicycle basket and pedals away past pastel-colored storefronts.</li>
+                        </ul>
+
+                    <div class="teaser-image-container">
+                        <img src="assets/figures/reference_effect.png" alt="Reference Effect" class="teaser-image" width="100%">
+                    </div>
+                </section>
+
+                <section id="samples" class="samples section">
+                    <h2>AnimeShooterGen in Reference-Guided Multi-Shot Storytelling</h2>
+                    <p>We show three different stories of <b>a young girl</b> with the same reference image:</p>
+                    
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A young girl wears mechanic's goggles, winding a broken clock tower gear in an abandoned train station.<br>
+                                        Shot-2: She stands on a suspended railway track, using hairpins to repair the gears stained with coal dust.<br>
+                                        Shot-3: She sits in a rooftop garden overgrown with ivy.<br>
+                                        Shot-4: She finds a broken car and tries to fix it.
+                                    </p>
+                                </div>
+                                <img src="assets/demos/yjIvkCaq0Zc_ref.png" alt="Girl Mechanic Reference" class="reference-image">
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_1_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_1_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_1_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_1_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A young girl stands at the edge of a frozen lake.<br>
+                                        Shot-2: She walks across the icy surface, slipping slightly.<br>
+                                        Shot-3: She kneels on the ice, looking down.<br>
+                                        Shot-4: She finds a cozy little cabin glowing warmly in the snow.
+                                    </p>
+                                </div>
+                                <!-- <img src="assets/demos/yjIvkCaq0Zc_ref.png" alt="Girl Winter Reference" class="reference-image"> -->
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_3_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_3_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_3_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_3_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A young girl kneels by a dried-up village well, carefully folding origami boats from old paper.<br>
+                                        Shot-2: She walks along a forest creek, stepping over roots that twist like fossilized snakes.<br>
+                                        Shot-3: In the forest, she stands in front of a stone door covered in lichen, looking at it curiously. An involuntary 'Oh!' escaped her.<br>
+                                        Shot-4: She steps into a cave, revealing a secret place full of gold and treasures.
+                                    </p>
+                                </div>
+                                <!-- <img src="assets/demos/yjIvkCaq0Zc_ref.png" alt="Girl Adventure Reference" class="reference-image"> -->
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_4_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_4_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_4_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/yjIvkCaq0Zc/generated_video_4_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>There are more demos for different characters: <b>a yellow dog</b>, <b>a wolf</b> and <b>a witch</b>:</p>
+
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A yellow dog lies down under a large tree at the edge of the field.<br>
+                                        Shot-2: It walks along a narrow dirt path surrounded by wildflowers.<br>
+                                        Shot-3: It naps in a patch of sunlight near a flowerbed.<br>
+                                        Shot-4: It wanders by a small river with lots of trees around it.
+                                    </p>
+                                </div>
+                                <img src="assets/demos/1dCd6hCRoaQ_ref.png" alt="Yellow Dog Reference" class="reference-image">
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1dCd6hCRoaQ/generated_video_2_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1dCd6hCRoaQ/generated_video_2_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1dCd6hCRoaQ/generated_video_2_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1dCd6hCRoaQ/generated_video_2_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A wolf stands in a cluttered workshop, organizing tools on a table.<br>
+                                        Shot-2: He sits in an office, staring at a flickering computer screen.<br>
+                                        Shot-3: He walks through a quiet park, nodding at empty benches.<br>
+                                        Shot-4: He enters a small café, operating a café machine.
+                                    </p>
+                                </div>
+                                <img src="assets/demos/5VtARFNISH4_ref.png" alt="Wolf Reference" class="reference-image">
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/5VtARFNISH4/generated_video_1_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/5VtARFNISH4/generated_video_1_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/5VtARFNISH4/generated_video_1_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/5VtARFNISH4/generated_video_1_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sample">
+                        <div class="sample-wrapper">
+                            <div class="sample-info">
+                                <div class="shot-narrative">
+                                    <p><b>Shot Captions:</b></p>
+                                    <p class="shot-descriptions">
+                                        Shot-1: A witch stands in a moonlit forest clearing, holding a staff.<br>
+                                        Shot-2: She stops where the forest ended. Before her rose a massive stone castle.<br>
+                                        Shot-3: She sits by a stone fireplace. Flames burst to life.<br>
+                                        Shot-4: She stands on a tower's roof, with snowy mountains behind her.
+                                    </p>
+                                </div>
+                                <img src="assets/demos/1ioFskl2Xpg_ref.png" alt="Witch Reference" class="reference-image">
+                            </div>
+                            <div class="sample-content">
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1ioFskl2Xpg/generated_video_1_1_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1ioFskl2Xpg/generated_video_1_2_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1ioFskl2Xpg/generated_video_1_3_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="media-item">
+                                    <video controls onplay="pauseOtherVideos(this)">
+                                        <source src="assets/demos/1ioFskl2Xpg/generated_video_1_4_demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section class="section" id="citation">
+                    <div class="container is-max-desktop content">
+                        <h2 class="title">Citation</h2>
+                        <pre><code>@misc{xxx,
+    title  =  {AnimeShooter: A Multi-Shot Animation Dataset for Reference-Guided Video Generation},
+    author =  {Qiu, Lu and Li, Yizhuo and Ge, Yuying and Ge, Yixiao and Shan, Ying and Liu, Xihui},
+    year   =  {2025},
+    url    =  {xxx}
+}</code></pre>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AnimeShooter Project. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const sections = document.querySelectorAll('.section');
+        const options = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "0px"
+        };
+
+        // Function to parse and display characters
+        function displayCharacters(charactersStr) {
+            try {
+                const characters = JSON.parse(charactersStr);
+                const charactersList = document.getElementById('storyCharactersList');
+                charactersList.innerHTML = '';
+                
+                characters.forEach(character => {
+                    const item = document.createElement('div');
+                    item.className = 'story-list-item';
+                    item.innerHTML = `
+                        <span class="item-id">${character.ID}:</span>
+                        <span class="item-description">${character.appearance}</span>
+                    `;
+                    charactersList.appendChild(item);
+                });
+            } catch (e) {
+                console.error('Error parsing characters:', e);
+            }
+        }
+
+        // Function to parse and display scenes
+        function displayScenes(scenesStr) {
+            try {
+                const scenes = JSON.parse(scenesStr);
+                const scenesList = document.getElementById('storyScenesList');
+                scenesList.innerHTML = '';
+                
+                scenes.forEach(scene => {
+                    const item = document.createElement('div');
+                    item.className = 'story-list-item';
+                    item.innerHTML = `
+                        <span class="item-id">${scene.ID}:</span>
+                        <span class="item-description">${scene.environment}</span>
+                    `;
+                    scenesList.appendChild(item);
+                });
+            } catch (e) {
+                console.error('Error parsing scenes:', e);
+            }
+        }
+
+        // Initialize the displays
+        document.addEventListener('DOMContentLoaded', function() {
+            const charactersStr = '[{"ID": "Luna", "appearance": "A young girl with dark hair, often seen wearing a purple dress. She has big eyes and a cheerful expression."}, {"ID": "Father", "appearance": "A man with a mustache and short dark hair, often wearing a blue shirt and apron."}]';
+            const scenesStr = '[{"ID": "Nighttime Cityscape", "environment": "An animated night city street with multiple buildings, a bridge, and streetlights with a night sky."}, {"ID": "Luna\'s room", "environment": "A dark animated room with space magazines and a toy rocket and a blue carpet."}, {"ID": "Birthday Table", "environment": "An animated table scene with cakes and candles on it."}, {"ID": "Shoemaker Shop", "environment": "An animated shoemaker\'s shop with shelves filled with shoes."}, {"ID": "Home", "environment": "An animated interior scene of the home with stairs, kitchen area and a dining table."}]';
+            
+            displayCharacters(charactersStr);
+            displayScenes(scenesStr);
+        });
+
+        const observer = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            });
+        }, options);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+    <script>
+        // Script for collapsible dataset structure
+        document.addEventListener('DOMContentLoaded', function () {
+            const expandButtons = document.querySelectorAll('.dataset-structure .expand-btn');
+
+            expandButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const content = this.parentElement.querySelector('.collapsible-content');
+                    if (content) {
+                        content.classList.toggle('show');
+                        this.classList.toggle('expanded');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        // Script for active navigation link highlighting
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.main-content-area section[id]');
+            const navLinks = document.querySelectorAll('#table-of-contents ul li a');
+
+            const observerOptions = {
+                root: null, // relative to document viewport 
+                rootMargin: '-10% 0px -60% 0px', // Adjusted margins to better handle edge cases
+                threshold: 0.1 // Lowered threshold to 10% for better last section detection
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+
+            // Additional check for when user scrolls to bottom
+            window.addEventListener('scroll', () => {
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10) {
+                    // User is at the bottom, highlight the last section
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    const lastNavLink = navLinks[navLinks.length - 1];
+                    if (lastNavLink) {
+                        lastNavLink.classList.add('active');
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        const videoPlayer = document.getElementById('mainVideo');
+        const shotButtons = document.querySelectorAll('.shot-btn');
+        
+        // Shot information data
+        const shotData = {
+            1: {
+                narrative: "An animated night cityscape is displayed, followed by the movie title.",
+                description: "A night scene of an animated city with multiple buildings, a bridge, and streetlights is shown. There is a clear night sky with stars and a full moon. The words \"TAIKO presents\" then appear.",
+                characters: "[]",
+                scene: "Nighttime Cityscape"
+            },
+            2: {
+                narrative: "The movie title is shown.",
+                description: "A framed child's drawing of a man and a girl is shown. The movie title \"ONE SMALL STEP\" is revealed",
+                characters: "[]",
+                scene: "null"
+            },
+            3: {
+                narrative: "Luna is wearing a helmet looking at a glowing screen in front of her.",
+                description: "Luna, with dark hair, is wearing a white and red helmet. She sits happily on a blue carpet with magazines, a paper rocket, and drawing supplies, gazing at a glowing screen in front of her.",
+                characters: "[Luna]",
+                scene: "Luna's room"
+            },
+            4: {
+                narrative: "A close up of a hand placing lit candles into a cake.",
+                description: "A close up view of a hand lighting birthday candles on a decorated cake, on a wooden table.",
+                characters: "[]",
+                scene: "Birthday Table"
+            },
+            5: {
+                narrative: "Luna's father is sitting at the table with a birthday hat on.",
+                description: "Luna's father is at the table with a pink birthday hat on, sitting still with his hands together.",
+                characters: "[Father]",
+                scene: "Birthday Table"
+            },
+            6: {
+                narrative: "Luna is sitting behind a cake with candles, smiling.",
+                description: "Luna is smiling at the camera behind her birthday cake with lit candles.",
+                characters: "[Luna]",
+                scene: "Birthday Table"
+            },
+            7: {
+                narrative: "Luna's father grabs a gift.",
+                description: "Luna's father, in a pink birthday hat, is sitting at the table. He points his finger in the air, then grabs a present.",
+                characters: "[Father]",
+                scene: "Birthday Table"
+            },
+            8: {
+                narrative: "Luna brings the gifts.",
+                description: "Luna approaches her father at a table with a gift while a party is going on in the background.",
+                characters: "[Luna, Father]",
+                scene: "Home"
+            },
+            9: {
+                narrative: "Luna peers through the opened flap of the gift box.",
+                description: "Luna peers through the opened flap of the gift box, smiling.",
+                characters: "[Luna]",
+                scene: "null"
+            },
+            10: {
+                narrative: "A close up of white and blue boots.",
+                description: "Close up of white and blue boots with a rocket emblem.",
+                characters: "[]",
+                scene: "null"
+            },
+            11: {
+                narrative: "Luna arrives at her fathers shop.",
+                description: "Luna approaches her father at his shoe shop while he is inside working.",
+                characters: "[Luna, Father]",
+                scene: "Shoemaker Shop"
+            },
+            12: {
+                narrative: "Luna's father works on shoes in his shop.",
+                description: "Luna's father uses tools to make shoes in his shop. Shoe shelves line the walls.",
+                characters: "[Father]",
+                scene: "Shoemaker Shop"
+            },
+            13: {
+                narrative: "Luna's father finishes his work and locks up his shop.",
+                description: "Luna's father carries a large bag to the entrance of his shop and then exits and locks up the store.",
+                characters: "[Father]",
+                scene: "Shoemaker Shop"
+            },
+        };
+
+        function timeToSeconds(timeStr) {
+            const parts = timeStr.split(':').map(Number);
+            if (parts.length === 2) {
+                return parts[0] * 60 + parts[1];
+            }
+            return 0;
+        }
+
+        function findShotByTime(currentTime) {
+            for (let i = 0; i < shotButtons.length; i++) {
+                const button = shotButtons[i];
+                const startTime = timeToSeconds(button.dataset.start);
+                const endTime = timeToSeconds(button.dataset.end);
+                
+                if (currentTime >= startTime && currentTime < endTime) {
+                    return i;
+                }
+            }
+            return shotButtons.length - 1;
+        }
+
+        function updateShotInfo(shotIndex) {
+            const shotNumber = shotIndex + 1;
+            const button = shotButtons[shotIndex];
+            const data = shotData[shotNumber] || {
+                narrative: "Information not available",
+                description: "Information not available",
+                characters: "Unknown",
+                scene: "Unknown"
+            };
+
+            // Update shot title
+            document.getElementById('currentShotTitle').textContent = `Shot-level Annotation for Shot ${shotNumber}`;
+            
+            // Update other information
+            document.getElementById('currentShotNarrative').textContent = data.narrative;
+            document.getElementById('currentShotDescription').textContent = data.description;
+            document.getElementById('currentShotCharacters').textContent = data.characters;
+            document.getElementById('currentShotScene').textContent = data.scene;
+        }
+
+        function updateButtonUI(currentTime) {
+            const currentShotIndex = findShotByTime(currentTime);
+            
+            // Update button highlighting
+            shotButtons.forEach(btn => btn.classList.remove('active'));
+            shotButtons[currentShotIndex].classList.add('active');
+            
+            // Update shot information
+            updateShotInfo(currentShotIndex);
+        }
+
+        // Listen to video time changes and update button UI accordingly
+        videoPlayer.addEventListener('timeupdate', function() {
+            updateButtonUI(videoPlayer.currentTime);
+        });
+
+        // Handle button clicks - jump to shot start
+        shotButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const startTime = timeToSeconds(button.dataset.start);
+                videoPlayer.currentTime = startTime;
+                // The timeupdate event will automatically update the UI
+            });
+        });
+
+        // Initialize UI on page load
+        videoPlayer.addEventListener('loadedmetadata', function() {
+            updateButtonUI(videoPlayer.currentTime);
+        });
+    </script>
+
+    <script>
+        function pauseOtherVideos(currentVideo) {
+            // Get all videos in the samples section
+            const videos = document.querySelectorAll('.samples video');
+            // Pause all videos except the current one
+            videos.forEach(video => {
+                if (video !== currentVideo) {
+                    video.pause();
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
+

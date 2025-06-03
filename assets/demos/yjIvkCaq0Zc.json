@@ -1,0 +1,58 @@
+{
+    "1": {
+        "captions": [
+            "A young girl wears mechanic's goggles, winding a broken clock tower gear in an abandoned train station.",
+            "She stands on a suspended railway track, using hairpins to repair the gears stained with coal dust.",
+            "She sits in a rooftop garden overgrown with ivy.",
+            "She finds a broken car and tries to fix it."
+        ],
+        "audio": [
+            "Metal gears grinding and clicking as they turn.",
+            "Metal gears grinding softly with faint clinks of hairpins.",
+            "Rustling of ivy leaves in a gentle breeze",
+            "The clinking of metal tools against the car."
+        ]
+    },
+    "2": {
+        "captions": [
+            "A young girl stands in a sunflower field, looking at the sky.",
+            "She walks along a dirt path surrounded by tall grass.",
+            "She walks through a garden blooming with flowers, butterflies dancing in the air.",
+            "She sits under a large tree, watching the rain."
+        ],
+        "audio": [
+            "Rustling of sunflower leaves in a gentle breeze.",
+            "Soft footsteps on a dirt path  \nRustling of tall grass as it brushes against movement  \nBirds chirping in the distance  \nAmbient forest sounds with occasional wind rustling leaves",
+            "Soft rustling of leaves and blooming flowers in a gentle breeze",
+            "Raindrops pattering on leaves and the ground."
+        ]
+    },
+    "3": {
+        "captions": [
+            "A young girl stands at the edge of a frozen lake.",
+            "She walks across the icy surface, slipping slightly.",
+            "She kneels on the ice, looking down.",
+            "She finds a cozy little cabin glowing warmly in the snow."
+        ],
+        "audio": [
+            "Soft crunching of snow beneath boots.",
+            "Crunching of icy surface beneath footsteps",
+            "Soft crunching of snow beneath the ice",
+            "Soft crackling of a fireplace inside the cabin."
+        ]
+    },
+    "4": {
+        "captions": [
+            "A young girl kneels by a dried-up village well, carefully folding origami boats from old paper.",
+            "She walks along a forest creek, stepping over roots that twist like fossilized snakes.",
+            "In the forest, she stands in front of a stone door covered in lichen, looking at it curiously. An involuntary 'Oh!' escaped her.",
+            "She steps into a cave, revealing a secret place full of gold and treasures."
+        ],
+        "audio": [
+            "A girl folds paper with rustling sounds as wind echoes.",
+            "A stream flows.",
+            "The girl gasps 'Oh!",
+            "The girl paces around with light footsteps."
+        ]
+    }
+}
